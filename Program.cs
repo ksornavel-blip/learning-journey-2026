@@ -17,11 +17,12 @@ app.UseSwaggerUI();
 var patients = new List<Patient>
 {
     new Patient { Id = 1, Name = "John Doe", Age = 45, Condition = "Hypertension" },
-    new Patient { Id = 2, Name = "Jane Smith", Age = 32, Condition = "Diabetes" }
+    new Patient { Id = 2, Name = "Jane Smith", Age = 32, Condition = "Diabetes" },
+    new Patient { Id = 3, Name = "Test Smith", Age = 32, Condition = "Cancer" }
 };
 
 // API Endpoints
-app.MapGet("/", () => "Patient API is running!");
+app.MapGet("/", () => "Patient API is running! - Deployed via CI/CD!");
 
 app.MapGet("/api/patients", () => patients);
 
