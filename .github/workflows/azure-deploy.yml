@@ -9,7 +9,6 @@ on:
 env:
   AZURE_WEBAPP_NAME: patient-api-sornavel-2024
   ACR_NAME: patientapiregistry
-  WORKING_DIRECTORY: ./PatientAPI
 
 jobs:
   build-and-deploy:
@@ -25,14 +24,14 @@ jobs:
         dotnet-version: '9.0.x'
     
     - name: Restore dependencies
-      working-directory: ${{ env.WORKING_DIRECTORY }}
+      working-directory: ./PatientAPI
       run: dotnet restore
     
     - name: Build
-      working-directory: ${{ env.WORKING_DIRECTORY }}
+      working-directory: ./PatientAPI
       run: dotnet build --configuration Release --no-restore
     
-    - name: Run Unit and Integration Tests
+    - name: Run Tests
       run: dotnet test PatientAPI.Tests/PatientAPI.Tests.csproj --configuration Release --verbosity normal
     
     - name: Login to Azure
@@ -41,45 +40,9 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     
     - name: Build and push to ACR
-      run: |
-        az acr build --registry ${{ env.ACR_NAME }} --image patient-api:${{ github.sha }} --image patient-api:latest ./PatientAPI
+      run: az acr build --registry ${{ env.ACR_NAME }} --image patient-api:${{ github.sha }} --image patient-api:latest ./PatientAPI
     
     - name: Deploy to App Service
       run: |
-        az webapp config container set \
-          --name ${{ env.AZURE_WEBAPP_NAME }} \
-          --resource-group expensetracker-rg \
-          --docker-custom-image-name ${{ env.ACR_NAME }}.azurecr.io/patient-api:latest
-        
+        az webapp config container set --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group expensetracker-rg --docker-custom-image-name ${{ env.ACR_NAME }}.azurecr.io/patient-api:latest
         az webapp restart --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group expensetracker-rg
-```
-
-**Key changes:**
-- ✅ Added `working-directory: ./PatientAPI` to restore and build steps
-- ✅ Test step specifies the full path: `PatientAPI.Tests/PatientAPI.Tests.csproj`
-- ✅ `az acr build` now points to `./PatientAPI` folder
-
----
-
-## Alternative: Restructure Your Repository (Better Long-term)
-
-Move the files so they're in the root:
-
-**Current structure:**
-```
-learning-journey-2026/
-├── PatientAPI/
-│   ├── Program.cs
-│   └── ...
-└── PatientAPI.Tests/
-```
-
-**Better structure:**
-```
-learning-journey-2026/
-├── Program.cs
-├── PatientAPI.csproj
-├── Dockerfile
-├── Models/
-├── Services/
-└── PatientAPI.Tests/
