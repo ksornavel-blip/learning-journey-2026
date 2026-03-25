@@ -37,7 +37,7 @@ public class PatientServiceTests
         // Assert
         patient.Should().NotBeNull();
         patient!.Id.Should().Be(expectedId);
-        patient.Name.Should().Be("John Doe");
+        patient.Name.Should().Be("John Doee");
     }
 
     [Fact]
