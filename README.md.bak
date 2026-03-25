@@ -196,7 +196,7 @@ Built as part of a modern .NET skill upgrade journey, demonstrating:
 - [ ] Unit and integration tests
 - [ ] Microservices architecture (Appointments service)
 - [ ] API Gateway implementation
-- [ ] Message queue integration (Azure Service Bus).
+- [ ] Message queue integration (Azure Service Bus)
 
 ## 🔧 Development
 
